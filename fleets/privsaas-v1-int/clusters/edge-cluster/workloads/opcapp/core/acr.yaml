@@ -4,7 +4,6 @@ data:
   .dockerconfigjson: eyJhdXRocyI6eyJwcml2c2Fhc3YxaW50YWNyLmF6dXJlY3IuaW8iOnsidXNlcm5hbWUiOiIwYWEyODg2Ni04MTkwLTQyMzgtOTU4MC03ZmZlZDYxMjQyMzYiLCJwYXNzd29yZCI6ImV1cDhRflJWajA0MnIwZmdFZDFMQjFzZ0lrZEFqSVA5UHc2eDliUkoiLCJlbWFpbCI6Imt1c2JyQG1pY3Jvc29mdC5jb20iLCJhdXRoIjoiTUdGaE1qZzROall0T0RFNU1DMDBNak00TFRrMU9EQXROMlptWldRMk1USTBNak0yT21WMWNEaFJmbEpXYWpBME1uSXdabWRGWkRGTVFqRnpaMGxyWkVGcVNWQTVVSGMyZURsaVVrbz0ifX19
 kind: Secret
 metadata:
-  name: hestia-acr-secret
-  namespace: hestia-system
+  name: hestia-acr-secret 
 type: kubernetes.io/dockerconfigjson
 
