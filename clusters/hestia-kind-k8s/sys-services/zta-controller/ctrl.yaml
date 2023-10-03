@@ -1,0 +1,136 @@
+
+# Source: zta-controller/charts/system-services/templates/serviceAccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hestia-zta-adm-ctrl
+  namespace: hestia-system
+---
+# Source: zta-controller/charts/system-services/templates/configMap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hestia-zta-adm-ctrl
+  namespace: hestia-system
+data:
+  ztaadmission-cfg.toml: |
+    zta_agent_workload_api_port = 8082
+    zta_ctrld_api_port = 8084
+    svid_dir_path = "/var/run/secrets/svids/"
+    zta_proxy_image = "privsaasv1intacr.azurecr.io/zta-proxy:beta"
+    zta_proxy_image_pull_policy = "Always"
+    zta_proxy_image_pull_secret =  "hestia-acr-secret"
+    workload_token_path = "/var/run/secrets/tokens"
+---
+# Source: zta-controller/charts/system-services/templates/clusterRole.yaml
+# Required cluster role to allow spire-agent to query k8s API server
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hestia-zta-adm-ctrl-cluster-role
+  namespace: hestia-system
+rules:
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources: ["mutatingwebhookconfigurations"]
+  verbs: ["create","delete","get","list"]
+---
+# Source: zta-controller/charts/system-services/templates/clusterRole.yaml
+# Binds above cluster role to spire-agent service account
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hestia-zta-adm-ctrl-cluster-role-binding
+  namespace: hestia-system
+subjects:
+- kind: ServiceAccount
+  name: hestia-zta-adm-ctrl
+  namespace: hestia-system
+roleRef:
+  kind: ClusterRole
+  name: hestia-zta-adm-ctrl-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: zta-controller/charts/system-services/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: zta-adm-ctrl
+  namespace: hestia-system
+spec:
+  type: ClusterIP
+  ports:
+    - name: admission
+      port: 8443
+      targetPort: 8084
+      protocol: TCP
+  selector:
+    app: hestia-zta-adm-ctrl
+---
+# Source: zta-controller/charts/system-services/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zta-adm-ctrl
+  namespace: hestia-system
+  labels:
+    app: hestia-zta-adm-ctrl
+spec:
+  selector:
+    matchLabels:
+      app: hestia-zta-adm-ctrl
+  template:
+    metadata:
+      labels:
+        app: hestia-zta-adm-ctrl
+    spec:
+      serviceAccountName: hestia-zta-adm-ctrl
+      containers:
+        # - name: test
+        #   image: nginx
+        #   command: ["/bin/sh"]
+        #   args: ["-c", "while true; do echo hello; sleep 10;done"]
+        #   imagePullPolicy: Always
+        - name: zta-adm-ctrl
+          image: "privsaasv1intacr.azurecr.io/zta-adm-ctrl:beta"
+          ports:
+            - containerPort: 8084
+              name: zta-ctrl
+              protocol: TCP
+          imagePullPolicy: Always
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: HOST_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: serviceInstanceName
+            value: hestia
+          - name: name
+            value: zta-adm-ctrl # name of the service being bootstraped
+          volumeMounts:
+            - name: config
+              mountPath: /usr/local/bin/privatesaas
+            - name: privsaas-zta-token
+              mountPath: /var/run/secrets/tokens
+            - name: zta-svids
+              mountPath: /var/run/secrets/svids
+          resources: {}
+      imagePullSecrets:
+        - name: hestia-acr-secret
+      volumes:
+        - name: config
+          configMap:
+            name: hestia-zta-adm-ctrl
+        - name: zta-svids
+          emptyDir: {}            
+        - name: privsaas-zta-token
+          projected:
+            sources:
+            - serviceAccountToken:
+                path: hestia-zta-adm-ctrl
+                expirationSeconds: 
+                audience: zta-agent
+
