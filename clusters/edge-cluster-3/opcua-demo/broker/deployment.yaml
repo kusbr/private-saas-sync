@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opcua-publisher
+  namespace: opcapp
+  labels:
+    app: broker
+spec:
+  selector:
+    matchLabels:
+      app: broker
+  template:
+    metadata:
+      labels:
+        app: broker
+    spec:
+      serviceAccountName: opcua-publisher
+      containers:
+        - name: opcua-publisher
+          image: "crhestiamp.azurecr.io/opcuabroker:beta"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+            - name: TIMESCALE_HOST
+              value: "opcua-historian.opcapp.svc:5432"
+            - name: TIMESCALE_USER
+              value: "postgres"
+            - name: TIMESCALE_PWD_ENV
+              value: "TIMESCALE_PWD"
+            - name: TIMESCALE_PWD
+              value: "Tsdb@123!"
+            - name: OPCUA_SERVER_URL
+              value: "opc.tcp://opcua-server.opcapp.svc:50000"
+            - name: NAMESPACE_INDEX
+              value: "3"
+            - name: AUTO_ACCEPT_UNTRUSTED_SERVER_CERT
+              value: "True"
+            - name: MONITORED_NODE_IDENTIFIERS
+              value: "SpikeData;StepUp;DipData;FastNumberOfUpdates;SlowNumberOfUpdates"
+            - name: ENABLE_TIMESERIES_LOGGING
+              value: "True"
+          volumeMounts:
+            - name: workload-token
+              mountPath: /var/run/secrets/tokens
+            - name: zta-svids
+              mountPath: /var/run/secrets/svids
+          resources: {}
+      imagePullSecrets:
+        - name: hestia-acr-secret
+      volumes:
+        - name: zta-svids
+          emptyDir: {}
+        - name: workload-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: workload
+                  expirationSeconds: 7200
+                  audience: zta-agent
