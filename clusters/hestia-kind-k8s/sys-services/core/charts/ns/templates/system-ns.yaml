@@ -1,8 +1,0 @@
-#### DO NOT MODIFY THIS TEMPLATE ####
-
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ .Values.global.serviceInstanceName }}-system
-  labels:
-    {{ .Values.global.serviceInstanceName }}: "true"
