@@ -23,7 +23,7 @@ data:
     SUBSCRIPTION_ID="b0c2f310-88be-48d1-95d0-7cc9947687b5"
     AZURE_ARC_NAMESPACE="azure-arc"
     AZURE_ARC_CONFIG_MAP_NAME="azure-clusterconfig"
-    CLUSTER_CAPACITY_CLOUD_API_URL="http://20.75.227.90/api/v1/clusters/capacity"
+    CLUSTER_CAPACITY_CLOUD_API_URL="http://privsaas.eastus.cloudapp.azure.com/cluster-capacity/api/v1/clusters/capacity"
 ---
 # Source: edge-capacity-service/charts/edge-capacity-svc/templates/clusterRole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
