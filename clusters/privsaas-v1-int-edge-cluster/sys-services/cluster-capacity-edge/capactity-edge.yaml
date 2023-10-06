@@ -89,7 +89,7 @@ spec:
       serviceAccountName: hestia-cluster-capacity-edge
       containers:
       - name: cluster-capacity-edge
-        image: privsaasv1intacr.azurecr.io/cluster-capacity-edge:1.0.0
+        image: privsaasv1intacr.azurecr.io/cluster-capacity-edge:beta
         ports:
         - containerPort: 3000
         imagePullPolicy: Always
