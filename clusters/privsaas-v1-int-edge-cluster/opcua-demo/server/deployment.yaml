@@ -17,7 +17,7 @@ spec:
       serviceAccountName: opcua-server
       containers:
         - name: opcua-server
-          image: "privsaasv1intacr.azurecr.io/opcplcserver:v1.int"
+          image: "crhestiamp.azurecr.io/opcplcserver:beta"
           imagePullPolicy: IfNotPresent
           command:
             [
