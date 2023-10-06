@@ -17,7 +17,7 @@ spec:
       serviceAccountName: opcua-historian
       containers:
         - name: opcua-historian
-          image: "crhestiamp.azurecr.io/tsdb:beta"
+          image: "privsaasv1intacr.azurecr.io/tsdb:v1.int"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432

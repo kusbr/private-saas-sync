@@ -17,7 +17,7 @@ spec:
       serviceAccountName: opcua-publisher
       containers:
         - name: opcua-publisher
-          image: "crhestiamp.azurecr.io/opcuabroker:beta"
+          image: "privsaasv1intacr.azurecr.io/opcuabroker:v1.int"
           imagePullPolicy: IfNotPresent
           env:
             - name: ASPNETCORE_ENVIRONMENT
