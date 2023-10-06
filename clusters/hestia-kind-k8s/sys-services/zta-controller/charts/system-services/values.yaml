@@ -1,0 +1,6 @@
+# Common keys for all system services
+replicas: 2
+
+requiresNodeAttestation: "false"
+webHookPort: 8084
+svcPort: 8443

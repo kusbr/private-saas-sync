@@ -1,0 +1,17 @@
+# Common keys for all system services
+replicas: 1
+resources:
+  requests:
+    storage: 100Mi
+    
+# Service specific keys
+isRootZtaServer: true           # false only if there is a root server already to which this server is registered
+selfSign:    
+  country: "US"
+  cn: "{{ tpl .Values.global.clusterName . }}.{{ tpl .Values.global.serviceInstanceName . }}.core"       
+  org: "OT"
+  alg: "RS256"                  # Valid values: RS256,ES256, ES384, ES521, default is RS256
+  keySize: "KeySize4096"                 # Required only for alg RS256, Valid values: KeySize2048, KeySize4096, default is KeySize2048
+  signerTTLHours: 2400
+
+svidTTLHours: 2400

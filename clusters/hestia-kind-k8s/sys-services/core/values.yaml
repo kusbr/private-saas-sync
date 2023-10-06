@@ -1,0 +1,75 @@
+global:
+  serviceInstanceName: "hestia"
+  trustDomainDnsName: "demo.privsaas.core"
+
+  sources:
+    containerRegistry: "privsaasv1intacr.azurecr.io"
+    images:
+      path: ""
+      tag: "beta"
+
+  servicePrincipal:
+    subType: "global" # global, gov, usgov, germany, china
+    subId: "b0c2f310-88be-48d1-95d0-7cc9947687b5"
+    tenantId: "72f988bf-86f1-41af-91ab-2d7cd011db47"
+    clientId: "0aa28866-8190-4238-9580-7ffed6124236"
+    clientSecret: "euo8Q_RVj042r0fgEd1LB1sgIkdaJIP9Pw6x9bRJ"
+    objectId: "a4ffaf7e-a131-48a4-ba08-2d44d4d3de41"
+
+  # values used as container image name, oci chart name, service name, etc.  
+  sysServices:
+      bootstrappingService: "bootstrapper-svc"
+      capacityServiceCloud: "cluster-capacity-cloud"
+      capacityServiceEdge: "cluster-capacity-edge"
+      controlPanel: "hestia-cp"
+      clusterRegistry: "cluster-registry"
+      deploymentService: "deployment-svc"
+      deploymentPlanService: "deploymentplan-svc"
+      fleetRegistry: "fleet-registry"
+      workloadService: "workload-svc"
+      workloadSchedService: "workload-scheduling-svc"
+      ztaAgent: "zta-agent"
+      ztaController: "zta-adm-ctrl"
+      ztaProxy: "zta-proxy"
+      ztaServer: "zta-server"
+  
+  storage:
+    className: "hostpath"
+
+  data:
+    cosmosdb:
+      uri: "https://privsaas-v1-int-cdb.documents.azure.com:443/"
+      key: "DK1uvVaZE5P2fasI89RH9szvc9e4oSQn51jqWC7vs6YPxcxQ8PAAZGR4KuZ2VaqX22NVvMhnBKReACDb9o5hXA=="
+      clusterregistry:
+        database: "cluster-registry"
+        clusterscontainer: "clusters"
+        capacitycontainer: "capacity"
+        partitionKey: ""
+      fleetregistry:
+        database: "psaas-fleet-registry"
+        container: "fleets"
+        partitionKey: "/customerId"
+      deploymentsvc:
+        database: "psaas-fleet-registry"
+        container: "deployments"
+        partitionKey: "/department"
+      deploymentplansvc:
+        database: "psaas-fleet-registry"
+        container: "deployments"
+        partitionKey: "/department"
+    eventHubs:
+      connectionString: "Endpoint=sb://privsaas-v1-int-sysbus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=edFzOD0/npRUkJ4YslH6r/XBWkxSfyx6Y+ASbMX3uxE="
+      fleetregistry:
+        topic: "fleet-events"
+        subscription: "fleet-events-subscription"
+      deploymentsvc:
+        topic: "appsched-request"
+        subscription: "appsched-request-subscription"
+
+  svidDirPath: "/var/run/secrets/svids/"
+  ztaServerAdminApiPort: "8080"
+  ztaServerSvidApiPort: 8081
+  ztaAgentWorkloadApiPort: 8082
+  ztaAgentRegistryApiPort: 8083
+
+  serviceAcctTokenExpirationSeconds: 7200

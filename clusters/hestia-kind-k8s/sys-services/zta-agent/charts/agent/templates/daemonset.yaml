@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Values.global.sysServices.ztaAgent }}
+  namespace: {{ .Values.global.serviceInstanceName }}-system
+  labels:
+    app: {{ tpl .Values.global.serviceInstanceName . }}-{{ .Values.global.sysServices.ztaAgent }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ tpl .Values.global.serviceInstanceName . }}-{{ .Values.global.sysServices.ztaAgent }}
+  template:
+    metadata:
+      labels:
+        app: {{ tpl .Values.global.serviceInstanceName . }}-{{ .Values.global.sysServices.ztaAgent }}
+    spec:
+      hostPID: true
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      serviceAccountName: {{ .Values.global.serviceInstanceName }}-{{ .Values.global.sysServices.ztaAgent }}
+      containers:
+        - name: {{ tpl .Values.global.serviceInstanceName . }}-{{ .Values.global.sysServices.ztaAgent }}
+          securityContext:
+            privileged: true
+            allowPrivilegeEscalation: true        
+          image: "{{ tpl .Values.global.sources.containerRegistry . }}/{{ tpl .Values.global.sysServices.ztaAgent . }}:{{ tpl .Values.global.sources.images.tag .}}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: {{ .Values.global.ztaAgentWorkloadApiPort }}
+            - containerPort: {{ .Values.global.ztaAgentRegistryApiPort }}
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName  
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace        
+          volumeMounts:
+            - name: config
+              mountPath: /usr/local/bin/privatesaas
+            - name: {{ tpl .Values.global.serviceInstanceName . }}-zta-token
+              mountPath: /var/run/secrets/tokens              
+            - name: zta-svids
+              mountPath: /var/run/secrets/svids
+            - name: {{ tpl .Values.global.serviceInstanceName . }}-{{ .Values.global.sysServices.ztaAgent }}-socket
+              mountPath: /run/privsaas/sockets/
+      imagePullSecrets:
+        - name: hestia-acr-secret
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.global.serviceInstanceName }}-{{ .Values.global.sysServices.ztaAgent }}
+        - name: {{ tpl .Values.global.serviceInstanceName . }}-{{ .Values.global.sysServices.ztaAgent }}-socket
+          emptyDir: {}
+          # persistentVolumeClaim:
+          #   claimName: {{ tpl .Values.global.serviceInstanceName . }}-{{ tpl .Values.global.sysServices.ztaAgent . }}-pvc
+        - name: zta-svids
+          emptyDir: {}
+        - name: {{ tpl .Values.global.serviceInstanceName . }}-zta-token
+          projected:
+            sources:
+            - serviceAccountToken:
+                path: {{ tpl .Values.global.serviceInstanceName . }}-{{ .Values.global.sysServices.ztaAgent }}
+                expirationSeconds: {{ .Values.global.serviceAcctTokenExpirationSeconds }}
+                audience: {{ .Values.global.sysServices.ztaServer }}

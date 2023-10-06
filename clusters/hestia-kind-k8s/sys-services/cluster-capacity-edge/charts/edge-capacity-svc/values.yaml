@@ -1,0 +1,13 @@
+# Common keys for all system services
+requiresNodeAttestation: "false"  # DO NOT CHANGE THIS VALUE
+resources:
+  requests:
+    storage: 100Mi
+
+svcPort: 80 # service port
+appPort: 3000     # web app port
+
+appHost: "0.0.0.0"  # 0.0.0.0 leverages available addr across i/faces
+appPort: 3000     # web app port
+appReadTimeoutSeconds: "30"   # timeout in sec 
+appDebug: false     

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.global.serviceInstanceName }}-{{ .Values.global.sysServices.ztaAgent }}
+  namespace: {{ .Values.global.serviceInstanceName }}-system
+data:
+  ztaagent-cfg.toml: |
+    server_svid_api = "http://{{ tpl .Values.global.serviceInstanceName . }}-{{ tpl .Values.global.sysServices.ztaServer . }}.{{ tpl .Values.global.serviceInstanceName . }}-system.svc:{{ .Values.global.ztaServerSvidApiPort }}"
+    server_admin_api = "http://{{ tpl .Values.global.serviceInstanceName . }}-{{ tpl .Values.global.sysServices.ztaServer . }}.{{ tpl .Values.global.serviceInstanceName . }}-system.svc:{{ .Values.global.ztaServerAdminApiPort }}"
+    svid_type = {{ .Values.svidAlg | quote}}
+    cache_ttl_hr = {{ .Values.cacheTTLHr }}
+    #api_sock = "/run/{{ tpl .Values.global.serviceInstanceName . }}/sockets/wlapi.sock"
+    api_port = {{ .Values.global.ztaAgentWorkloadApiPort }}
+    registry_api_port = {{ .Values.global.ztaAgentRegistryApiPort }}
+    k8s_psat_path = "/var/run/secrets/tokens/{{ tpl .Values.global.serviceInstanceName . }}-{{ .Values.global.sysServices.ztaAgent }}"
+    svid_dir_path = {{ .Values.global.svidDirPath | quote}}
+    verbose = false
+    token_audience = {{ .Values.global.sysServices.ztaAgent |quote }}
+
+    [azlighthouse_client_cfg]
+    login_authority = "{{ tpl .Values.azureLightHouse.loginAuthority . }}"
+    client_id = "{{ tpl .Values.azureLightHouse.clientId . }}"
+    client_secret = "{{ tpl .Values.azureLightHouse.clientSecret . }}"
+    sub_id = "{{ tpl .Values.azureLightHouse.subId . }}"
+    tenant_id = "{{ tpl .Values.azureLightHouse.tenantId . }}"
+    api_version = "{{ tpl .Values.azureLightHouse.apiVersion . }}"

@@ -1,0 +1,26 @@
+# Required cluster role to allow spire-agent to query k8s API server
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Values.global.serviceInstanceName }}-{{ .Values.global.sysServices.ztaController}}-cluster-role
+  namespace: {{ .Values.global.serviceInstanceName }}-system
+rules:
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources: ["mutatingwebhookconfigurations"]
+  verbs: ["create","delete","get","list"]
+
+---
+# Binds above cluster role to spire-agent service account
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Values.global.serviceInstanceName }}-{{ .Values.global.sysServices.ztaController}}-cluster-role-binding
+  namespace: {{ .Values.global.serviceInstanceName }}-system
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.global.serviceInstanceName }}-{{ .Values.global.sysServices.ztaController}}
+  namespace: {{ .Values.global.serviceInstanceName }}-system
+roleRef:
+  kind: ClusterRole
+  name: {{ .Values.global.serviceInstanceName }}-{{ .Values.global.sysServices.ztaController}}-cluster-role
+  apiGroup: rbac.authorization.k8s.io

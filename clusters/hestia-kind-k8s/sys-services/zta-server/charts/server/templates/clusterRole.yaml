@@ -1,0 +1,33 @@
+# ClusterRole to allow .Values.global.ztaServerName node attestor to query Token Review API
+# and to be able to push trust-bundles to a configmap
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: "{{ tpl .Values.global.serviceInstanceName . }}-{{ tpl .Values.global.sysServices.ztaServer . }}-clusterrole"
+  namespace: {{ .Values.global.serviceInstanceName }}-system
+rules:
+- apiGroups: [""]
+  resources: ["pods", "nodes","nodes/proxy"]
+  verbs: ["get", "list"]
+- apiGroups: ["authentication.k8s.io"]
+  resources: ["tokenreviews"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["patch", "get", "list"]
+
+---
+# Binds above cluster role to spire-server service account
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Values.global.serviceInstanceName }}-{{ .Values.global.sysServices.ztaServer }}-clusterrole-binding
+  namespace: {{ .Values.global.serviceInstanceName }}-system
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.global.serviceInstanceName }}-{{ .Values.global.sysServices.ztaServer }}
+  namespace: {{ .Values.global.serviceInstanceName }}-system
+roleRef:
+  kind: ClusterRole
+  name: {{ .Values.global.serviceInstanceName }}-{{ .Values.global.sysServices.ztaServer }}-clusterrole
+  apiGroup: rbac.authorization.k8s.io
