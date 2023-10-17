@@ -1,1 +1,1 @@
-test for bootstrap
+Source manifests
