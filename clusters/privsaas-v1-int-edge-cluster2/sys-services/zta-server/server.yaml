@@ -129,7 +129,7 @@ spec:
       serviceAccountName: hestia-zta-server
       containers:
         - name: hestia-zta-server
-          image: "privsaasv1intacr.azurecr.io/zta-server:beta"
+          image: "privsaasv1intacr.azurecr.io/zta-server:beta1"
           ports:
             - containerPort: 8080
             - containerPort: 8081
