@@ -138,7 +138,7 @@ spec:
           - name: IMAGE_REPO
             value: "privsaasv1intacr.azurecr.io/"
           - name: IMAGE_TAG
-            value: "beta"
+            value: "beta1"
           volumeMounts:
             - name: config
               mountPath: /usr/local/bin/privatesaas
