@@ -90,7 +90,7 @@ spec:
           securityContext:
             privileged: true
             allowPrivilegeEscalation: true        
-          image: "privsaasv1intacr.azurecr.io/zta-agent:beta"
+          image: "privsaasv1intacr.azurecr.io/zta-agent:beta1"
           imagePullPolicy: Always
           ports:
             - containerPort: 8082
