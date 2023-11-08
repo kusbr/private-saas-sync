@@ -13,8 +13,8 @@ metadata:
   namespace: hestia-system
 data:
   ztaagent-cfg.toml: |
-    server_svid_api = "http://zta-server.hestia-system.svc:8081"
-    server_admin_api = "http://zta-server.hestia-system.svc:8080"
+    server_svid_api = "http://hestia=zta-server.hestia-system.svc:8081"
+    server_admin_api = "http://hestia-zta-server.hestia-system.svc:8080"
     svid_type = "rsa"
     cache_ttl_hr = 1
     #api_sock = "/run/hestia/sockets/wlapi.sock"
