@@ -113,7 +113,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: zta-server
+  name: hestia-zta-server
   namespace: hestia-system
   labels:
     app: hestia-zta-server
@@ -128,7 +128,7 @@ spec:
     spec:
       serviceAccountName: hestia-zta-server
       containers:
-        - name: hestia-zta-server
+        - name: zta-server
           image: "privsaasv1intacr.azurecr.io/zta-server:beta1"
           ports:
             - containerPort: 8080
