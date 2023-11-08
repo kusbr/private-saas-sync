@@ -113,7 +113,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hestia-zta-server
+  name: zta-server
   namespace: hestia-system
   labels:
     app: hestia-zta-server
