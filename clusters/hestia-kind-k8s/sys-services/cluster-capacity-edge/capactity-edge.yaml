@@ -89,7 +89,7 @@ spec:
       serviceAccountName: hestia-cluster-capacity-edge
       containers:
       - name: cluster-capacity-edge
-        image: privsaasv1intacr.azurecr.io/cluster-capacity-edge:beta
+        image: privsaasv1intacr.azurecr.io/cluster-capacity-edge:beta1
         ports:
         - containerPort: 3000
         imagePullPolicy: Always
@@ -124,7 +124,7 @@ metadata:
   name: cluster-capacity-job
   namespace: hestia-system
 spec:
-  schedule: '*/1 * * * *'
+  schedule: '*/10 * * * *'
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 0
   jobTemplate:

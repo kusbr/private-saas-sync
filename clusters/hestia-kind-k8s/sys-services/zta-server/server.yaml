@@ -113,7 +113,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hestia-zta-server
+  name: zta-server
   namespace: hestia-system
   labels:
     app: hestia-zta-server
@@ -128,8 +128,8 @@ spec:
     spec:
       serviceAccountName: hestia-zta-server
       containers:
-        - name: hestia-zta-server
-          image: "privsaasv1intacr.azurecr.io/zta-server:beta"
+        - name: zta-server
+          image: "privsaasv1intacr.azurecr.io/zta-server:beta1"
           ports:
             - containerPort: 8080
             - containerPort: 8081
@@ -138,7 +138,7 @@ spec:
           - name: IMAGE_REPO
             value: "privsaasv1intacr.azurecr.io/"
           - name: IMAGE_TAG
-            value: "beta"
+            value: "beta1"
           volumeMounts:
             - name: config
               mountPath: /usr/local/bin/privatesaas
