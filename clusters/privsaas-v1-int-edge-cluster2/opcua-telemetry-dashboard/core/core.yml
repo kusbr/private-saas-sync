@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJjcmhlc3RpYW1wLmF6dXJlY3IuaW8iOnsidXNlcm5hbWUiOiJhNDc1Y2IxOS0xYmM3LTQyYmEtYjk3ZC1jNGQ5ODNhMzI0ODQiLCJwYXNzd29yZCI6Ijl5UzhRfk9pWkFXfmhOMGxiZUk5em1DNWhEWmdGYjF1RUVVdTdjME8iLCJhdXRoIjoiWVRRM05XTmlNVGt0TVdKak55MDBNbUpoTFdJNU4yUXRZelJrT1RnellUTXlORGcwT2psNVV6aFJmazlwV2tGWGZtaE9NR3hpWlVrNWVtMUROV2hFV21kR1lqRjFSVVZWZFRkak1FOD0ifX19
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: hestia-acr-secret
+  namespace: opcapp
+type: kubernetes.io/dockerconfigjson
