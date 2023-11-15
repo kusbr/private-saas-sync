@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: opcua-historian
-  namespace: opcapp
+  namespace: microsoft-iiot-services
   labels:
     app: tsdb
 spec:
