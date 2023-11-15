@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: opcua-publisher
-  namespace: opcapp
+  namespace: microsoft-iiot-services
   labels:
     app: broker
 spec:
@@ -23,7 +23,7 @@ spec:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Development"
             - name: TIMESCALE_HOST
-              value: "opcua-historian.opcapp.svc:5432"
+              value: "opcua-historian.microsoft-iiot-services.svc:5432"
             - name: TIMESCALE_USER
               value: "postgres"
             - name: TIMESCALE_PWD_ENV
@@ -31,7 +31,7 @@ spec:
             - name: TIMESCALE_PWD
               value: "Tsdb@123!"
             - name: OPCUA_SERVER_URL
-              value: "opc.tcp://opcua-server.opcapp.svc:50000"
+              value: "opc.tcp://opcua-server.microsoft-iiot-services.svc:50000"
             - name: NAMESPACE_INDEX
               value: "3"
             - name: AUTO_ACCEPT_UNTRUSTED_SERVER_CERT
