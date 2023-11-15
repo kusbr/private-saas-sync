@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: opcua-telemetry-dashboard
-  namespace: opcapp
+  namespace: microsoft-iiot-services
   labels:
     app: dashboard
 spec:
