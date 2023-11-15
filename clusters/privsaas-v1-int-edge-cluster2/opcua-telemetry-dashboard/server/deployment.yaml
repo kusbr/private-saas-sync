@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: opcua-server
-  namespace: opcapp
+  namespace: microsoft-iiot-services
   labels:
     app: opcua
 spec:
