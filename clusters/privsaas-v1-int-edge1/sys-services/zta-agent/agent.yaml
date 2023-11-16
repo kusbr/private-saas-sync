@@ -1,0 +1,135 @@
+# Source: zta-agent/charts/agent/templates/serviceAccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: hestia-system
+  name: hestia-zta-agent
+---
+# Source: zta-agent/charts/agent/templates/configMap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hestia-zta-agent
+  namespace: hestia-system
+data:
+  ztaagent-cfg.toml: |
+    server_svid_api = "http://hestia-zta-server.hestia-system.svc:8081"
+    server_admin_api = "http://hestia-zta-server.hestia-system.svc:8080"
+    svid_type = "rsa"
+    cache_ttl_hr = 1
+    #api_sock = "/run/hestia/sockets/wlapi.sock"
+    api_port = 8082
+    registry_api_port = 8083
+    k8s_psat_path = "/var/run/secrets/tokens/hestia-zta-agent"
+    svid_dir_path = "/var/run/secrets/svids/"
+    verbose = true
+    token_audience = "zta-agent"
+
+    [azlighthouse_client_cfg]
+    login_authority = "Global"
+    client_id = "529262df-6ae4-4601-b12f-05ea51c88346"
+    client_secret = "eFI8Q~fonSi7GMnm7nfJrlNJxOwc3nugQ93cwaFB"
+    sub_id = "95df029c-bbc5-41ec-b0be-663c672fbb1f"
+    tenant_id = "f202e6f6-e739-4c3a-bd15-fff8c2f7c5dd"
+    api_version = "2022-10-01"
+---
+# Source: zta-agent/charts/agent/templates/clusterRole.yaml
+# Required cluster role to allow spire-agent to query k8s API server
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hestia-zta-agent-cluster-role
+  namespace: hestia-system
+rules:
+- apiGroups: [""]
+  resources: ["pods","namespaces","nodes","nodes/proxy"]
+  verbs: ["delete","get","list"]
+- apiGroups: ["authentication.k8s.io"]
+  resources: ["tokenreviews"]
+  verbs: ["create"]
+---
+# Source: zta-agent/charts/agent/templates/clusterRole.yaml
+# Binds above cluster role to spire-agent service account
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hestia-zta-agent-cluster-role-binding
+  namespace: hestia-system
+subjects:
+- kind: ServiceAccount
+  name: hestia-zta-agent
+  namespace: hestia-system
+roleRef:
+  kind: ClusterRole
+  name: hestia-zta-agent-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: zta-agent/charts/agent/templates/daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: zta-agent
+  namespace: hestia-system
+  labels:
+    app: hestia-zta-agent
+spec:
+  selector:
+    matchLabels:
+      app: hestia-zta-agent
+  template:
+    metadata:
+      labels:
+        app: hestia-zta-agent
+    spec:
+      hostPID: true
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      serviceAccountName: hestia-zta-agent
+      containers:
+        - name: hestia-zta-agent
+          securityContext:
+            privileged: true
+            allowPrivilegeEscalation: true        
+          image: "privsaasv1intacr.azurecr.io/zta-agent:beta1"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+            - containerPort: 8083
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName  
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace        
+          volumeMounts:
+            - name: config
+              mountPath: /usr/local/bin/privatesaas
+            - name: hestia-zta-token
+              mountPath: /var/run/secrets/tokens              
+            - name: zta-svids
+              mountPath: /var/run/secrets/svids
+            - name: hestia-zta-agent-socket
+              mountPath: /run/privsaas/sockets/
+      imagePullSecrets:
+        - name: hestia-acr-secret
+      volumes:
+        - name: config
+          configMap:
+            name: hestia-zta-agent
+        - name: hestia-zta-agent-socket
+          emptyDir: {}
+          # persistentVolumeClaim:
+          #   claimName: hestia-zta-agent-pvc
+        - name: zta-svids
+          emptyDir: {}
+        - name: hestia-zta-token
+          projected:
+            sources:
+            - serviceAccountToken:
+                path: hestia-zta-agent
+                expirationSeconds: 7200
+                audience: zta-server
+
