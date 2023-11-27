@@ -1,0 +1,10 @@
+# Source: core/charts/ns/templates/system-ns.yaml
+#### DO NOT MODIFY THIS TEMPLATE ####
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hestia-system
+  labels:
+    hestia: "true"
+
