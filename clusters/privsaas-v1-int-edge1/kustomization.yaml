@@ -3,3 +3,4 @@ kind: Kustomization
 namespace: microsoft-iiot-services
 resources:
 - namespace.yaml
+- opcua-telemetry-dashboard
