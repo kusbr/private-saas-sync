@@ -9,7 +9,7 @@ spec:
   containers:
   - image: docker.io/library/nginx:latest
     imagePullPolicy: Always
-    name: contoso-workload-rg
+    name: contoso-workload-pod
     resources: {}
     volumeMounts:
     - name: workload-token
