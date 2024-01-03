@@ -124,7 +124,7 @@ metadata:
   name: cluster-capacity-job
   namespace: hestia-system
 spec:
-  schedule: '*/10 * * * *'
+  schedule: '*/60 * * * *'
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 0
   jobTemplate:
