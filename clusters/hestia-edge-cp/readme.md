@@ -1,0 +1,1 @@
+hestia edge cp manifests
