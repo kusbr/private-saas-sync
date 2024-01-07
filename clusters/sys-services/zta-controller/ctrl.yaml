@@ -17,7 +17,7 @@ data:
     zta_agent_workload_api_port = 8082
     zta_ctrld_api_port = 8084
     svid_dir_path = "/var/run/secrets/svids/"
-    zta_proxy_image = "privsaasv1intacr.azurecr.io/zta-proxy:beta"
+    zta_proxy_image = "privsaasv1intacr.azurecr.io/zta-proxy:beta1"
     zta_proxy_image_pull_policy = "Always"
     zta_proxy_image_pull_secret =  "hestia-acr-secret"
     workload_token_path = "/var/run/secrets/tokens"
@@ -91,7 +91,7 @@ spec:
         #   args: ["-c", "while true; do echo hello; sleep 10;done"]
         #   imagePullPolicy: Always
         - name: zta-adm-ctrl
-          image: "privsaasv1intacr.azurecr.io/zta-adm-ctrl:beta"
+          image: "privsaasv1intacr.azurecr.io/zta-adm-ctrl:beta1"
           ports:
             - containerPort: 8084
               name: zta-ctrl
